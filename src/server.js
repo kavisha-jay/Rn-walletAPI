@@ -3,11 +3,14 @@ import dotenv from "dotenv";
 import initDB from "./config/db.js"
 import rateLimiterMiddleware from "./middleware/limiter.js";
 import transaction from "./routes/transaction.js";
+import job from "./config/cron.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 5001;
 const app = express();
 
+
+if(process.env.NODE_ENV==="production")job.start();
 //middleware
 app.use(express.json())
 app.use(rateLimiterMiddleware)
@@ -15,7 +18,9 @@ app.use(rateLimiterMiddleware)
 //router
 app.use('/api/transactions', transaction);
 
-
+app.get('/api/health', (req, res) => {
+  res.status(200).json({status:"ok"})
+})
 
 
 console.log("PORT:", process.env.PORT);
