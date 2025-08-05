@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import initDB from "./config/db.js"
-import rateLimiterMiddleware from "./middleware/ratelimiter.js";
+import rateLimiterMiddleware from "./middleware/limiter.js";
 import transaction from "./routes/transaction.js";
 
 dotenv.config();
