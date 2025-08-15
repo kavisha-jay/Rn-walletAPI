@@ -2,10 +2,9 @@ import { sql } from "../config/db.js";
 
 export async function getTransactionsByUserId(req, res) {
         try {
-         const {userId} = req.params;
          
          const transaction = await sql`
-         SELECT * FROM transactions WHERE user_id = ${userId} ORDER BY create_at DESC
+         SELECT * FROM transactions ORDER BY create_at DESC
          `
      
          res.status(200).json(transaction)
@@ -17,15 +16,15 @@ export async function getTransactionsByUserId(req, res) {
 
 export async function postTransaction(req, res) {
         try {
-            const {title, amount, category, user_id} = req.body;
+            const {title, amount, category} = req.body;
     
-            if(!title || !user_id || !category || amount===undefined) {
+            if(!title || !category || amount===undefined) {
                 return res.status(400).json({message:"All fields are required"})
             } 
     
             const transaction = await sql`
-            INSERT INTO transactions(user_id, title, amount, category)
-            VALUES (${user_id}, ${title}, ${amount}, ${category})
+            INSERT INTO transactions( title, amount, category)
+            VALUES ( ${title}, ${amount}, ${category})
             RETURNING *
             `
     
@@ -67,15 +66,15 @@ export async function getSummaryByUserId (req, res)  {
     try {
         const {userId} = req.params;
         const balanceResult = await sql`
-         SELECT COALESCE(SUM(amount), 0) as balance FROM transactions WHERE user_id = ${userId}
+         SELECT COALESCE(SUM(amount), 0) as balance FROM transactions 
         `
 
         const incomeResult =  await sql`
-         SELECT COALESCE(SUM(amount), 0) as income FROM transactions WHERE user_id = ${userId} AND amount > 0
+         SELECT COALESCE(SUM(amount), 0) as income FROM transactions WHERE amount > 0
         `
 
         const expensesResult =  await sql`
-        SELECT COALESCE(SUM(amount), 0) as expenses FROM transactions WHERE user_id = ${userId} AND amount < 0
+        SELECT COALESCE(SUM(amount), 0) as expenses FROM transactions WHERE  AND amount < 0
        `
 
        res.status(200).json({
