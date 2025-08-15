@@ -12,7 +12,7 @@ router.get('/', getTransactionsByUserId)
  
 router.post('/post', postTransaction)
  
-router.delete('/delete',  deleteTransactionById);
+router.delete('/:id',  deleteTransactionById);
  
 router.get('/summary', getSummaryByUserId)
  
